@@ -1,0 +1,93 @@
+﻿@model Tuple<List<ASP.NETCore_TrainingApp.Models.EmployeeModel>, List<ASP.NETCore_TrainingApp.Models.EmployeeModel>>
+@using System
+
+
+    <div class="row">
+    <div class="col-md-3">
+
+<h1>Employees</h1>
+
+@if (Model.Item1.Count == 0)
+{
+    <p>No employees have been added yet.</p>
+}
+else
+{
+    <ul id="employee-list">
+          @foreach (var employee in Model.Item1)
+                {
+                    <li id="employee-@employee.Id">@employee.Id - @employee.Name - @employee.Position - @employee.IsAgreement - @employee.Date</li>
+                }
+    </ul>
+}
+
+<a asp-action="Add">Add employee</a>
+
+    </div>
+    <div class="col-md-9">
+    <h3>Employees who have worked less than 10 seconds</h3>
+    @if (Model.Item2.Count == 0)
+    {
+        <p>No employees have been added yet.</p>
+    }
+    else
+    {
+        <ul id="expired-employee-list">
+            @foreach (var expireemployee in Model.Item2)
+            {
+                <li id="expired-employee-@expireemployee.Id">@expireemployee.Id - @expireemployee.Name - @expireemployee.Position - @expireemployee.IsAgreement - @expireemployee.Date</li>
+            }
+        </ul>
+    }
+</div>
+       @* <div class="col-md-9">
+        <h3>Employees who have worked less than 10 seconds</h3>
+        @if (Model.Item2.Count == 0)
+{
+    <p>No employees have been added yet.</p>
+}
+else
+{
+          <ul id="expired-employee-list"> </ul>
+           @foreach (var expireemployee in Model.Item2)
+            {
+                <li id="expired-employee-@expireemployee.Id">@expireemployee.Id - @expireemployee.Name - @expireemployee.Position - @expireemployee.IsAgreement - @expireemployee.Date</li>
+            }
+
+}
+   
+    </div>*@
+
+    </div>
+<script>
+    setInterval(function() {
+        $.ajax({
+            url: '/Employee/Remove',
+            type: 'POST',
+            dataType: 'json',
+            success: function(response) {
+                console.log('Removed employee IDs: ' + response.removedEmployeeIds);
+
+                // Remove the expired employees from the list displayed on the page
+                for (var i = 0; i < response.removedEmployeeIds.length; i++) {
+                    var idToRemove = response.removedEmployeeIds[i];
+                    $('#expired-employee-list li').filter(function() {
+                        return $(this).text().indexOf(idToRemove) === 0;
+                    }).remove();
+                }
+
+                // Update the expired employee list
+                $.get('/Employee/GetExpiredEmployees', function(data) {
+                    $('#expired-employee-list').html(data);
+                });
+
+            },
+            error: function(xhr, status, error) {
+                console.log('Error: ' + error);
+            }
+        });
+    }, 1000);
+</script>
+
+
+  

@@ -1,0 +1,25 @@
+﻿@model EmployeeModel
+<h1>Add Employee</h1>
+
+<form asp-action="Add" method="post">
+    <div>
+        <label>Name:</label>
+        <input type="text" name="name" required />
+    </div>
+    <div>
+        <label>Position:</label>
+        <input type="text" name="position" required />
+    </div>
+
+     <div>
+        <label asp-for="IsAgreement">Agreement for rules:</label>
+    <input asp-for="IsAgreement" type="checkbox" required />
+    <span asp-validation-for="IsAgreement" class="text-danger"></span>
+      </div>
+
+    <div>
+        <button type="submit">Add</button>
+    </div>
+</form>
+
+<a asp-action="Index">Back to list</a>
