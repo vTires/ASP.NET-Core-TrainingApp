@@ -15,5 +15,10 @@ namespace ASP.NETCore_TrainingApp.Controllers
         {
             return View();
         }
+
+        public IActionResult Privacy()
+        {
+            return View();
+        }
     }
 }

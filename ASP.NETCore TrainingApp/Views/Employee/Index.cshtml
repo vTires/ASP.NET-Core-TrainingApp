@@ -1,11 +1,32 @@
 ﻿@model Tuple<List<ASP.NETCore_TrainingApp.Models.EmployeeModel>, List<ASP.NETCore_TrainingApp.Models.EmployeeModel>>
 @using System
 
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<div>
+    <p>This is a case where HR needed to know which employees have worked certain amount of time.</p>
+</div>
 
-    <div class="row">
-    <div class="col-md-3">
+@*<a asp-action="Add">Add employee</a>*@
 
-<h1>Employees</h1>
+
+    <button type="button"
+            id="add-employee-btn"
+            class="my-btn btn btn-success"
+            href="/Employee/Add"
+            style="margin: 40px;
+                   text-align:center">
+            Add your own employee</button>
+             
+
+
+
+
+<div class="row">
+<div class="col-md-6">
+
+<h1>Full list of added employees</h1>
 
 @if (Model.Item1.Count == 0)
 {
@@ -21,14 +42,14 @@ else
     </ul>
 }
 
-<a asp-action="Add">Add employee</a>
+
 
     </div>
-    <div class="col-md-9">
-    <h3>Employees who have worked less than 10 seconds</h3>
+    <div class="col-md-6">
+    <h1>Employees who have worked less than 10 seconds</h1>
     @if (Model.Item2.Count == 0)
     {
-        <p>No employees have been added yet.</p>
+        <p>No employees in the time list.</p>
     }
     else
     {
@@ -40,26 +61,33 @@ else
         </ul>
     }
 </div>
-       @* <div class="col-md-9">
-        <h3>Employees who have worked less than 10 seconds</h3>
-        @if (Model.Item2.Count == 0)
-{
-    <p>No employees have been added yet.</p>
-}
-else
-{
-          <ul id="expired-employee-list"> </ul>
-           @foreach (var expireemployee in Model.Item2)
-            {
-                <li id="expired-employee-@expireemployee.Id">@expireemployee.Id - @expireemployee.Name - @expireemployee.Position - @expireemployee.IsAgreement - @expireemployee.Date</li>
-            }
 
-}
-   
-    </div>*@
 
     </div>
-<script>
+
+@*STYLES*@
+<style>
+    .my-btn {
+        font-size: 24px;
+        padding: 16px 32px;
+        border-radius: 8px;
+        border-color: black;
+        background-image: linear-gradient(to bottom right, #ebc334, #fff1bf);
+        color: black;
+        transition: transform 0.3s;
+    }
+    .my-btn:hover {
+        transform: scale(1.1);
+        opacity: inherit;
+        color: white;
+        border-color: white;
+    }
+</style>
+@*STYLES END*@
+
+
+@*SCRIPTS*@
+<script class="EmployeeTimer">
     setInterval(function() {
         $.ajax({
             url: '/Employee/Remove',
@@ -88,6 +116,33 @@ else
         });
     }, 1000);
 </script>
+@*<script>
+    $(document).ready(function() {
+        $('#add-employee-btn').click(function() {
+            $.ajax({
+                url: '/ControllerName/Add',
+                type: 'POST',
+                success: function(response) {
+                    
+                },
+                error: function(xhr, status, error) {
+                    // handle the error response from the server
+                }
+            });
+        });
+    });
+</script>*@
+<script>
+    $(document).ready(function() {
+    $('.my-btn').click(function() {
+        var url = $(this).attr('href');
+        window.location.href = url;
+    });
+});
+</script>
 
+
+
+@*SCRIPTS END*@
 
   
