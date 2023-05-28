@@ -1,3 +1,5 @@
+using ASP.NETCore_TrainingApp.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -23,7 +25,36 @@ namespace ASP.NETCore_TrainingApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var ipAddress = Configuration.GetValue<string>("CloudSQL:IpAddress");
+            var connectionName = Configuration.GetValue<string>("CloudSQL:ConnectionName");
+            var databaseName = Configuration.GetValue<string>("CloudSQL:DatabaseName");
+            var username = Configuration.GetValue<string>("CloudSQL:Username");
+            var password = Configuration.GetValue<string>("CloudSQL:Password");
+
+            services.AddSingleton(new CloudDatabaseService(ipAddress, connectionName, databaseName, username, password));
+
+            services.AddAuthorization(options =>
+            {
+                options.DefaultPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+
+                options.AddPolicy("CustomPolicy", policy =>
+                {
+                    // Configure your custom policy if needed.
+                });
+            });
+            services.AddSingleton<IAuthorizationPolicyProvider, CustomPolicyProvider>();
+
+
+            // Other services...
+
             services.AddControllersWithViews();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -53,5 +84,6 @@ namespace ASP.NETCore_TrainingApp
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
         }
+
     }
 }

@@ -1,0 +1,127 @@
+﻿@page 
+@model List<ASP.NETCore_TrainingApp.Models.CloudDatabaseModel>
+
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <style>
+    .row {
+      margin-bottom: 30px;
+      border-bottom: 1px solid black;
+    }
+    
+    .button {
+      background: linear-gradient(to right, red, orange);
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      height: 50px;
+      width: 200px;
+    }
+   
+    .button.green {
+      background: linear-gradient(to right, lime, green);
+    }
+
+    .verticalrow {
+    margin-bottom: 30px;
+    border-bottom: 1px solid black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+  </style>
+        </head>
+        <body>
+   <div class="verticalrow" style="height: auto;">
+    <h3 style="margin-top:10px;">Introduction</h3>
+    <h5 id="introductionText" style="margin-left: 20px; margin-top:10px; margin-bottom:20px;">
+        This is training page about Google Cloud mySQL database. Database is on trial and it is not public,
+        so app won't works for everyone. Provided code was tested.</h5>
+
+
+  </div>
+
+   <div class="row" style="height: 70px; text-align:center">
+    <h3 style="text-align: left; margin-top:10px;">Connection</h3>
+    <button id="connectButton" class="button" style="margin-left:20px; text-align: center;">Connect</button>
+    <h5 id="connectedText" style="display: none; margin-left: 30px; margin-top:10px; text-align: center;">Database connected</h5>
+  </div>
+
+  <div class="row" style="height: 300px; display: flex; flex-wrap: wrap;">
+    <h3 style="text-align: left; margin-top:10px;">Show current data table</h3>
+    <button id="refreshTableButton" class="button" style="margin-left:20px; text-align: center;">Refresh table</button>
+  </div>
+
+  <div class="row">
+    <h3 style="text-align: left; margin-top:10px;">Insert data</h3>
+  </div>
+
+  <div class="row">
+    <h3 style="text-align: left; margin-top:10px;">Remove data</h3>
+  </div>
+
+  <div class="row">
+    <h3 style="text-align: left; margin-top:10px;">Different operation</h3>
+  </div>
+
+  <script>
+    var connectButton = document.getElementById("connectButton");
+    var connectedText = document.getElementById("connectedText");
+    var refreshTableButton = document.getElementById("refreshTableButton");
+
+
+
+    refreshTableButton.addEventListener("click", function() {
+        refreshTableButton.textContent = "Refreshed";
+        refreshTableButton.classList.add("green");
+        
+             setTimeout(function() {
+        refreshTableButton.textContent = "Refresh table";
+        refreshTableButton.classList.remove("green");
+        
+      }, 1000);
+        })
+
+    connectButton.addEventListener("click", function() {
+         connectButton.disabled = true;
+         connectButton.textContent = "Connecting...";
+
+             var xhr = new XMLHttpRequest();
+            xhr.open("GET", "@Url.Action("Connect", "CloudDatabase")");
+            xhr.onload = function() {
+        if (xhr.status === 200) {
+                    //success
+                  connectButton.classList.add("green");
+                  connectButton.disabled = true;
+                  connectButton.textContent = "Connected";
+                  connectedText.style.display = "inline";
+                  setTimeout(function() {
+                        connectedText.style.display = "none";
+                        connectedText.textContent = "Database connected.";
+                    }, 2000);
+        } else {
+            //error
+                    connectButton.textContent = "Connect";
+                    connectedText.style.display = "inline";
+                     setTimeout(function() {
+                        connectedText.style.display = "none";
+                        connectedText.textContent = "An error has occurred.";
+                    }, 2000);
+                }
+            };
+            xhr.send();
+           });
+
+     
+  </script>
+        </body>
+    </html>
+
+
+
+
+
